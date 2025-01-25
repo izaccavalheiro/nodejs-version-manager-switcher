@@ -19,8 +19,6 @@ Cross-platform Bash script to detect and manage Node.js versions across differen
 
 - Bash
 - curl
-- NVM
-
 - **NVM (Node Version Manager) MUST be installed**
   - Install from: https://github.com/nvm-sh/nvm
   - macOS/Linux: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash`

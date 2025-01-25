@@ -13,11 +13,12 @@ Cross-platform Bash script to detect and manage Node.js versions across differen
 - 🔄 Detect Node.js version from:
   - `.nvmrc`
   - `.node-version`
-  - `package.json` engines
+  - `package.json` engines with complex version range support
 
 ## Prerequisites
 
 - Bash
+- Python 3
 - curl
 - **NVM (Node Version Manager) MUST be installed**
   - Install from: https://github.com/nvm-sh/nvm
@@ -26,7 +27,7 @@ Cross-platform Bash script to detect and manage Node.js versions across differen
 
 ## Quick Setup
 
-1. Install NVM
+1. Install NVM and Python 3
 2. Download nvms script
 ```bash
 curl -O https://raw.githubusercontent.com/yourusername/nvms/main/nvms.sh
@@ -68,8 +69,8 @@ function nvms { bash path/to/nvms.sh }
 ## Troubleshooting
 
 - Ensure executable permissions: `chmod +x nvms.sh`
-- Check curl and bash are installed
-- Verify version management tools (NVM, Homebrew, etc.)
+- Check Python 3, curl, and bash are installed
+- Verify version management tools (NVM)
 
 ## Contributing
 

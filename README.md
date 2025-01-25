@@ -6,11 +6,11 @@ Cross-platform Bash script to detect and manage Node.js versions across differen
 
 ## Features
 
-🔍 Multi-source version detection
-🌐 Cross-platform support
-⚡ Lightweight Bash script
-🚀 Automatic version installation
-🔄 Detect Node.js version from:
+- 🔍 Multi-source version detection
+- 🌐 Cross-platform support
+- ⚡ Lightweight Bash script
+- 🚀 Automatic version installation
+- 🔄 Detect Node.js version from:
   - `.nvmrc`
   - `.node-version`
   - `package.json` engines

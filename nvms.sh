@@ -73,7 +73,24 @@ install_nodejs() {
 # Function to parse package.json and extract Node.js version
 get_version_from_package_json() {
     if [ -f "package.json" ]; then
-        local version=$(grep -E '"engines"\s*:' package.json | sed -E 's/.*"node"\s*:\s*"?([^"~^]+)[^"]*".*/\1/' | tr -d ' ')
+        local version=$(python3 -c "
+import json
+import re
+
+try:
+    with open('package.json', 'r') as f:
+        data = json.load(f)
+        if 'engines' in data and 'node' in data['engines']:
+            node_version = data['engines']['node']
+            
+            # Handle version ranges like '>=16.0.0 <17.0.0'
+            versions = re.findall(r'\d+\.\d+\.\d+', node_version)
+            if versions:
+                # Return the lowest version if multiple found
+                print(sorted(versions)[0])
+except Exception:
+    pass
+" 2>/dev/null)
         
         if [ ! -z "$version" ]; then
             echo "$version"

@@ -116,9 +116,12 @@ usage() {
 }
 
 # Main script logic
+# Main script logic
 main() {
     local install_mode=0
     local version=""
+    local version_source=""
+    local exit_code=0
 
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -137,34 +140,51 @@ main() {
         esac
     done
 
-    # Check .nvmrc file
-    if [ -f ".nvmrc" ]; then
-        version=$(cat .nvmrc | tr -d '\n')
-        echo "Version found in .nvmrc: $version"
-    
-    # Check .node-version file
-    elif [ -f ".node-version" ]; then
-        version=$(cat .node-version | tr -d '\n')
-        echo "Version found in .node-version: $version"
-    
-    # Check package.json
-    else
-        version=$(get_version_from_package_json)
-        if [ $? -eq 0 ]; then
-            echo "Version found in package.json: $version"
-        else
-            echo "No Node.js version found in .nvmrc, .node-version, or package.json"
-            exit 1
+    # Try each version source in order of priority
+    if [ -f ".nvmrc" ] && [ -s ".nvmrc" ]; then
+        version=$(cat .nvmrc | tr -d '\n' || echo "")
+        if [ ! -z "$version" ]; then
+            version_source=".nvmrc"
         fi
+    fi
+
+    if [ -z "$version" ] && [ -f ".node-version" ] && [ -s ".node-version" ]; then
+        version=$(cat .node-version | tr -d '\n' || echo "")
+        if [ ! -z "$version" ]; then
+            version_source=".node-version"
+        fi
+    fi
+
+    if [ -z "$version" ]; then
+        version=$(get_version_from_package_json)
+        if [ $? -eq 0 ] && [ ! -z "$version" ]; then
+            version_source="package.json"
+        fi
+    fi
+
+    # Handle case when no version is found
+    if [ -z "$version" ]; then
+        echo "Warning: No Node.js version found in .nvmrc, .node-version, or package.json"
+        echo "Using default LTS version"
+        version="lts/*"
+        version_source="default"
+        exit_code=0
+    else
+        echo "Version found in $version_source: $version"
     fi
 
     # Install the version if install mode is on
     if [ $install_mode -eq 1 ]; then
-        install_nodejs "$version"
+        if ! install_nodejs "$version"; then
+            echo "Error: Failed to install Node.js version $version"
+            exit 1
+        fi
     else
         # Just output the version
         echo "$version"
     fi
+
+    exit $exit_code
 }
 
 # Run the main function
